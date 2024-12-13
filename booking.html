@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+
+</head>
+
+<body>
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo"><img src="imag/logo.png" alt=""></a>
+            <a href="car.html">Home</a>
+            <a href="myOrders.html">my orders</a>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search cars..." oninput="searchCars()">
+                <button type="submit">Search</button>
+            </div>
+            <div class="dropdown">
+                <a href="#">Type</a>
+                <div class="dropdown-content">
+                    <a href="#" onclick="filterByType('Sedan')">Sedan</a>
+                    <a href="#" onclick="filterByType('SUV')">SUV</a>
+                    <a href="#" onclick="filterByType('Sports car')">Sports car</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <a href="#">Brand</a>
+                <div class="dropdown-content">
+                    <a href="#" onclick="filterByBrand('Mercedes-Benz')">
+                        <img src="imag/Benz.logo.png" alt="Toyota Logo" style="width: 40px; height: 30px;">
+                        Benz
+                    </a>
+                    <a href="#" onclick="filterByBrand('Ford')">
+                        <img src="imag/ford.logo.png" alt="Ford Logo" style="width: 40px; height: 30px;">
+                        Ford
+                    </a>
+                    <a href="#" onclick="filterByBrand('Mazda')">
+                        <img src="imag/Mazida.png" alt="Mazda Logo" style="width: 40px; height: 30px;">
+                        Mazda
+                    </a>
+                    <a href="#" onclick="filterByBrand('BMW')">
+                        <img src="imag/BMW.logo.png" alt="BMW Logo" style="width: 40px; height: 30px;">
+                        BMW
+                    </a>
+                    <a href="#" onclick="filterByBrand('Audi')">
+                        <img src="imag/Audi.logo.png" alt="Audi Logo" style="width: 40px; height: 30px;">
+                        Audi
+                    </a>
+                    <a href="#" onclick="filterByBrand('Toyota')">
+                        <img src="imag/toyota.logo.png" alt="Toyota Logo" style="width: 40px; height: 30px;">
+                        Toyota
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <div id="carContainer" class="services-container"></div>
+
+    <script>
+
+        // JSON 
+        let cars;
+
+        function loadJSON(callback) {
+            var xobj = new XMLHttpRequest();
+            xobj.overrideMimeType("application/json");
+            xobj.open('GET', 'car.json', true);
+            xobj.onreadystatechange = function () {
+                if (xobj.readyState == 4 && xobj.status == 200) {
+                    cars = JSON.parse(xobj.responseText);
+                    callback(cars);
+                }
+            };
+            xobj.send(null);
+        }
+
+        loadJSON(function (cars) {
+            displayCars(cars);
+
+        });
+
+
+        function displayCars(cars) {
+            const carContainer = document.getElementById('carContainer');
+            carContainer.innerHTML = '';
+
+            cars.forEach(car => {
+                const carDiv = document.createElement('div');
+                carDiv.classList.add('box');
+                carDiv.innerHTML = `
+            <div class="box-img">
+                <img src="${car.image}" alt="">
+            </div>
+            <p>${car.type}</p>
+            <h3>${car.model}</h3>
+            <h4>${car.seats} [${car.fuel_type}]</h4>
+            <h4>Mileage: ${car.Mileage}</h4>
+            <h2>${car.price_per_day} <span>/day</span></h2>   
+            <a href="myOrders.html" class="btn" onclick="saveOrder('${car.model}', '${car.price_per_day}', '${car.image}', '${car.type}', '${car.fuel_type}')">Rent Now</a>
+        `;
+                carContainer.appendChild(carDiv);
+            });
+        }
+
+
+        function searchCars() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.toLowerCase().trim();
+
+            const filteredCars = cars.filter(car => {
+                return (
+                    car.model.toLowerCase().includes(searchTerm) ||
+                    car.brand.toLowerCase().includes(searchTerm) ||
+                    car.type.toLowerCase().includes(searchTerm) ||
+                    car.seats.toLowerCase().includes(searchTerm) ||
+                    car.fuel_type.toLowerCase().includes(searchTerm)
+                );
+            });
+
+
+            displayCars(filteredCars);
+        }
+
+
+        function filterByType(type) {
+            const filteredCars = cars.filter(car => {
+                return car.type === type;
+            });
+
+            displayCars(filteredCars);
+        }
+
+
+        function filterByBrand(brand) {
+            const filteredCars = cars.filter(car => {
+                return car.brand === brand;
+            });
+
+            displayCars(filteredCars);
+        }
+
+        function saveOrder(model, price, image, type, mileage, fuel_type) {
+            const orderItem = { model: model, price: price, image: image, type: type, fuel_type: fuel_type };
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            orders.push(orderItem);
+            localStorage.setItem('orders', JSON.stringify(orders));
+        }
+
+
+    </script>
+</body>
+
+</html>

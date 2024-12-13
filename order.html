@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipping Details</title>
+</head>
+
+<body>
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo"><img src="imag/logo.png" alt=""></a>
+            <a href="car.html">Home</a>
+            <a href="myOrders.html">my orders</a>
+    </header>
+
+    <form id="shippingForm">
+        <h2>Personal Information Details</h2>
+        <label for="name">Recipient Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter recipient name">
+
+        <label for="mobile">Mobile Number:</label>
+        <input type="text" id="mobile" name="mobile" placeholder="Enter mobile number">
+
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" name="email" placeholder="Enter email address">
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" placeholder="Enter street address">
+
+        <label for="city">City/Suburb:</label>
+        <input type="text" id="city" name="city" placeholder="Enter city or suburb">
+
+        <label for="state">State:</label>
+        <select id="state" name="state">
+            <option value="">Select a state</option>
+            <option value="NSW">NSW</option>
+            <option value="VIC">VIC</option>
+            <option value="QLD">QLD</option>
+            <option value="SA">SA</option>
+            <option value="TAS">TAS</option>
+            <option value="ACT">ACT</option>
+            <option value="NT">NT</option>
+            <option value="OTHERS">OTHERS</option>
+        </select>
+
+        <label for="postcode">Postcode:</label>
+        <input type="text" id="postcode" name="postcode" placeholder="Enter postcode">
+
+        <label for="country">Country:</label>
+        <input type="text" id="country" name="country" value="Australia" readonly>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="message"></div>
+
+    <style>
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .logo {
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .logo img {
+            width: 80px;
+            height: 30px;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+        }
+
+        .navbar .logo {
+            margin-right: auto;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: white;
+            padding: 10px;
+            font-size: 18px;
+        }
+
+        .navbar a:hover {
+            background-color: #555;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            color: #323e65;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #474fa0;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+            margin-top: 15px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #cb6a37;
+        }
+
+        #shippingForm   {
+            width: fit-content;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #shippingForm>label {
+            margin: 15px 0 4px 0;
+            display: block;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        document.getElementById("shippingForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            submitForm();
+        });
+
+        function submitForm() {
+            alert("Your address has been saved");
+        }
+    </script>
+</body>
+
+</html>

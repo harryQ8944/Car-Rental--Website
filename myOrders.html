@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>my orders</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo"><img src="imag/logo.png" alt=""></a>
+            <a href="car.html">Home</a>
+            <a href="booking.html">Booking</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>my orders</h1>
+        <h2 class="title">Submitted Orders</h2>
+        <div id="submittedOrderContainer" class="order-container">
+            <!-- header -->
+        </div>
+        <h2 class="title">Unsubmitted Orders</h2>
+        <div id="unsubmittedOrderContainer" class="order-container">
+            <!--  -->
+        </div>
+        <div class="total-price">Total Price: $<span id="totalPrice">0.00</span></div>
+    </div>
+    <button id="submitOrderBtn" class="submit-order-btn">Submit</button>
+    <button id="confirmOrderBtn" class="submit-order-btn">Confirm</button>
+
+
+    <script>
+
+        document.getElementById('submitOrderBtn').addEventListener('click', function () {
+            window.location.href = 'order.html';
+        });
+
+        document.getElementById('confirmOrderBtn').addEventListener('click', function () {
+            alert('Order has been submitted');
+            localStorage.setItem('ordersSubmitted', JSON.stringify(true));
+            renderOrders();
+            window.location.href = 'myOrders.html';
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const submittedOrderContainer = document.getElementById('submittedOrderContainer');
+            const unsubmittedOrderContainer = document.getElementById('unsubmittedOrderContainer');
+            const totalPriceSpan = document.getElementById('totalPrice');
+            let orders = JSON.parse(localStorage.getItem('orders')) || [];
+            let ordersSubmitted = JSON.parse(localStorage.getItem('ordersSubmitted')) || false;
+
+            function renderOrders() {
+                let total       = 0
+
+                submittedOrderContainer.innerHTML   = 
+                unsubmittedOrderContainer.innerHTML = `
+                    <div class='orderItem boldTip'>
+                        <div id='carImg' >image</div>
+                        <div id='type'>Model / Price</div>
+                        <div id='beginDate' >begin at</div>
+                        <div id='endDate'   >end at</div>
+                        <div id='Quantity'  >Quantity</div>
+                        <div class='act'    >Action</div>
+                    </div>`
+
+                if (orders.length > 0) {
+                    orders.forEach((order, index) => {
+                        total += parseFloat(order.price) * (order.quantity || 1);
+                        const orderHTML = `
+                        <div class='orderItem'>
+                            <img id='carImg' src="${order.image}" alt="${order.model}">
+                            <div id='type'>
+                                <pre>${order.model + '    ' + order.type}</pre>
+                                <p>${order.price} / day</p>
+                            </div>
+                            <input id='beginDate' type="date"   value="${order.startDate}" >
+                            <input id='endDate'   type="date"   value="${order.endDate}"   >
+                            <input id='Quantity'  type="number" value="${order.quantity || 1}" min="1" data-index="${index}">
+                            <button class="act order-delete-btn" data-index="${index}">Delete</button>
+                        </div>`;
+
+                        if (ordersSubmitted) {
+                            submittedOrderContainer.innerHTML += orderHTML;
+                        } else {
+                            unsubmittedOrderContainer.innerHTML += orderHTML;
+                        }
+                    });
+                } else {
+                    if (ordersSubmitted) {
+                        submittedOrderContainer.innerHTML = '<p>No submitted orders yet.</p>';
+                    } else {
+                        unsubmittedOrderContainer.innerHTML = '<p>No unsubmitted orders yet.</p>';
+                    }
+                }
+
+                totalPriceSpan.textContent = total.toFixed(2);
+            }
+
+            renderOrders();
+
+            document.addEventListener('change', function (event) {
+                if (event.target.classList.contains('order-quantity')) {
+                    const index = event.target.dataset.index;
+                    const newQuantity = parseInt(event.target.value);
+                    orders[index].quantity = newQuantity;
+                    localStorage.setItem('orders', JSON.stringify(orders));
+                    renderOrders();
+                }
+            });
+
+            submittedOrderContainer.addEventListener('click', function (event) {
+                if (event.target.classList.contains('order-delete-btn')) {
+                    const index = event.target.dataset.index;
+                    orders.splice(index, 1);
+                    localStorage.setItem('orders', JSON.stringify(orders));
+                    renderOrders();
+                }
+            });
+
+            unsubmittedOrderContainer.addEventListener('click', function (event) {
+                if (event.target.classList.contains('order-delete-btn')) {
+                    const index = event.target.dataset.index;
+                    orders.splice(index, 1);
+                    localStorage.setItem('orders', JSON.stringify(orders));
+                    renderOrders();
+                }
+            });
+        });
+
+    </script>
+
+    <style>
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .logo {
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .logo img {
+            width: 80px;
+            height: 30px;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+        }
+
+        .navbar .logo {
+            margin-right: auto;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: white;
+            padding: 10px;
+            font-size: 18px;
+        }
+
+        .navbar a:hover {
+            background-color: #555;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* .boldTip    {font-weight: bold; color:grey;} */
+        .boldTip    {font-weight: 600; opacity: .38;}
+        .orderItem  {
+            border-bottom: 1px solid #ddd;
+            padding: 4px 0;
+            display: flex;
+            gap: 1em;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .orderItem>* {
+            line-height: 30px;
+            border: none;
+            /* padding-left: .5em; */
+            /* t r b l */
+            /* padding: .5em; */
+            /* t b 0, l r .5 */
+            padding: 0 .5em;
+        }
+        .orderItem>#carImg {
+            height: auto;
+            width: 8em;
+            /* flex-grow: 2;
+            width: 0; */
+        }
+        .orderItem>#type {
+            flex-grow: 1;
+            line-height: unset;
+        }
+        .orderItem>input {
+            /* flex-shrink: 0; */
+            border-radius: 6px;
+            background: #8882;
+        }
+        .orderItem>#beginDate, .orderItem>#endDate {
+            width: 108px;
+        }
+        .orderItem>#Quantity {
+            width: 72px;
+        }
+        .orderItem>.act {
+            width: 60px;
+            border: none;
+            border-radius: 6px;
+            line-height: 30px;
+        }
+
+        .title {margin-top: 2em;}
+
+        .total-price {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .submit-order-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #474fa0;
+            color: #FFF;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-order-btn:hover {
+            background-color: #cb6a37;
+        }
+    </style>
+</body>
+
+</html>
